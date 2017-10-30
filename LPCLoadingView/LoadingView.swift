@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoadingView: UIView {
+public class LoadingView: UIView {
     
     // MARK: Static Properties
     
@@ -16,21 +16,34 @@ class LoadingView: UIView {
     
     // MARK: Properties
     
+    public var isAnimating: Bool = true {
+        didSet {
+            if isAnimating {
+                doAnimateCycle(withRects: [rect1, rect2, rect3])
+            } else {
+                endAnimation = true
+            }
+        }
+    }
+    
     private var hudColor: UIColor?
     private var hudRects = [AnyHashable]()
+    private var endAnimation: Bool = false
+    
+    private var rect1: UIView!
+    private var rect2: UIView!
+    private var rect3: UIView!
     
     // MARK: Override Methods
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         
         configUI()
         isUserInteractionEnabled = false
-        alpha = 0
-        
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
@@ -38,30 +51,33 @@ class LoadingView: UIView {
     
     func configUI() {
         backgroundColor = UIColor.clear
-        let rect1 = drawRect(atPosition: CGPoint(x: 0, y: 0))
-        let rect2 = drawRect(atPosition: CGPoint(x: 20, y: 0))
-        let rect3 = drawRect(atPosition: CGPoint(x: 40, y: 0))
+        rect1 = drawRect(atPosition: CGPoint(x: 0, y: 0))
+        rect2 = drawRect(atPosition: CGPoint(x: 20, y: 0))
+        rect3 = drawRect(atPosition: CGPoint(x: 40, y: 0))
         addSubview(rect1)
         addSubview(rect2)
         addSubview(rect3)
-        doAnimateCycle(withRects: [rect1, rect2, rect3])
         setHudColor()
     }
     
     func doAnimateCycle(withRects rects: [UIView]) {
-        weak var wSelf: LoadingView? = self
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(0.25 * 0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
-            wSelf?.animateRect(rects[0], withDuration: 0.25)
+        if !endAnimation {
+            weak var wSelf: LoadingView? = self
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(0.25 * 0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
-                wSelf?.animateRect(rects[1], withDuration: 0.2)
-                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(0.2 * 0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
-                    wSelf?.animateRect(rects[2], withDuration: 0.15)
+                wSelf?.animateRect(rects[0], withDuration: 0.25)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(0.25 * 0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
+                    wSelf?.animateRect(rects[1], withDuration: 0.2)
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(0.2 * 0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
+                        wSelf?.animateRect(rects[2], withDuration: 0.15)
+                    })
                 })
             })
-        })
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(0.6 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
-            wSelf?.doAnimateCycle(withRects: rects)
-        })
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(0.6 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
+                wSelf?.doAnimateCycle(withRects: rects)
+            })
+        } else {
+            endAnimation = false
+        }
     }
     
     func animateRect(_ rect: UIView, withDuration duration: TimeInterval) {

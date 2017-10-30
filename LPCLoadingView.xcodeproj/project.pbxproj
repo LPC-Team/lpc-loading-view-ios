@@ -11,6 +11,7 @@
 		FF09B15F1FA0E86B001C9E72 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B15E1FA0E86B001C9E72 /* LoadingView.swift */; };
 		FF09B1611FA0E8E6001C9E72 /* LoadingHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B1601FA0E8E6001C9E72 /* LoadingHUD.swift */; };
 		FF09B1641FA0E949001C9E72 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF09B1631FA0E949001C9E72 /* UIColor+Extensions.swift */; };
+		FF8B5EFD1FA76A120027E7DE /* UIPullToRefreshTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF8B5EFC1FA76A120027E7DE /* UIPullToRefreshTableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +21,7 @@
 		FF09B15E1FA0E86B001C9E72 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		FF09B1601FA0E8E6001C9E72 /* LoadingHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingHUD.swift; sourceTree = "<group>"; };
 		FF09B1631FA0E949001C9E72 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
+		FF8B5EFC1FA76A120027E7DE /* UIPullToRefreshTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPullToRefreshTableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 				FF09B15E1FA0E86B001C9E72 /* LoadingView.swift */,
 				FF09B1601FA0E8E6001C9E72 /* LoadingHUD.swift */,
 				FF09B1551FA0E82A001C9E72 /* Info.plist */,
+				FF8B5EFC1FA76A120027E7DE /* UIPullToRefreshTableView.swift */,
 			);
 			path = LPCLoadingView;
 			sourceTree = "<group>";
@@ -148,6 +151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF8B5EFD1FA76A120027E7DE /* UIPullToRefreshTableView.swift in Sources */,
 				FF09B15D1FA0E846001C9E72 /* SVRadialGradientLayer.swift in Sources */,
 				FF09B1611FA0E8E6001C9E72 /* LoadingHUD.swift in Sources */,
 				FF09B15F1FA0E86B001C9E72 /* LoadingView.swift in Sources */,

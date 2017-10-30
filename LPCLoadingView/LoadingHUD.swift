@@ -30,6 +30,7 @@ public class LoadingHUD: UIView {
                     sharedView.loadingView = LoadingView(frame: frame)
                     sharedView.addSubview(sharedView.loadingView)
                     sharedView.bringSubview(toFront: sharedView.loadingView)
+                    sharedView.loadingView.isAnimating = true
                     let layer = SVRadialGradientLayer()
                     layer.frame = sharedView.bounds
                     var gradientCenter = sharedView.center
@@ -50,8 +51,6 @@ public class LoadingHUD: UIView {
         self.getSharedView().loadingView?.show(animated: true)
         self.getSharedView().isHidden = false
     }
-    
-    
     
     public class func dismiss() {
         self.getSharedView().isHidden = true
