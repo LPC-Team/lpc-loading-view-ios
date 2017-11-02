@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "LPCLoadingView"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "LPCLoadingView library"
   s.description  = "LPCLoadingView is a library for loading of Le Pot Commun"
   s.homepage     = "https://github.com/LPC-Team/lpc-loading-view-ios"
