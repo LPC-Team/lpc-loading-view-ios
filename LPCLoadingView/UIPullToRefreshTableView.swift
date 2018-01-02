@@ -22,6 +22,8 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     
     var customView: LoadingView!
     
+    private var layoutWasSubviewd: Bool?
+
     // MARK: Overrides
     
     override public init(frame: CGRect, style: UITableViewStyle) {
@@ -31,7 +33,14 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.configUI()
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        if layoutWasSubviewd == nil || layoutWasSubviewd == false {
+            layoutWasSubviewd = true
+            configUI()
+        }
     }
     
     // MARK: Private Methods
