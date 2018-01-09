@@ -16,29 +16,33 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     
     // MARK: Properties
     
-    weak public var delegatePullToRefresh: UIPullToRefreshDelegate?
+    public weak var delegatePullToRefresh: UIPullToRefreshDelegate?
     
-    var lpcRefreshControl: UIRefreshControl!
+    var lpcRefreshControl: UIRefreshControl?
     
     var customView: LoadingView!
     
-    private var layoutWasSubviewd: Bool?
-
+    private let customViewHeight = CGFloat(20)
+    
+    private let customViewWidth = CGFloat(55)
+    
+    private var layoutWasSubviewed: Bool = false
+    
     // MARK: Overrides
     
-    override public init(frame: CGRect, style: UITableViewStyle) {
+    public override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style)
-        self.configUI()
+        configUI()
     }
     
-    required public init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
     public override func layoutSubviews() {
         super.layoutSubviews()
-        if layoutWasSubviewd == nil || layoutWasSubviewd == false {
-            layoutWasSubviewd = true
+        if layoutWasSubviewed == false {
+            layoutWasSubviewed = true
             configUI()
         }
     }
@@ -46,30 +50,52 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     // MARK: Private Methods
     
     private func configUI() {
-        delegate = self
-        
-        self.lpcRefreshControl = UIRefreshControl()
-        self.lpcRefreshControl.backgroundColor = UIColor.clear
-        self.lpcRefreshControl.tintColor = UIColor.clear
-        addSubview(lpcRefreshControl)
-        let frame = CGRect(x: (self.frame.size.width - 55) / 2, y: (self.lpcRefreshControl.frame.size.height - 20) / 2, width: 55, height: 20)
-        self.customView = LoadingView(frame: frame)
-        self.lpcRefreshControl.addSubview(customView)
+        lpcRefreshControl = UIRefreshControl()
+        lpcRefreshControl!.backgroundColor = UIColor.clear
+        lpcRefreshControl!.tintColor = UIColor.clear
+        if #available(iOS 10.0, *) {
+            refreshControl = lpcRefreshControl!
+        } else {
+            addSubview(lpcRefreshControl!)
+        }
+        let frame = CGRect(x: (self.frame.size.width - customViewWidth) / 2, y: -customViewHeight / 2, width: customViewWidth, height: customViewHeight)
+        customView = LoadingView(frame: frame)
+        lpcRefreshControl!.addSubview(customView)
+    }
+    
+    private func refresh() {
+        if self.lpcRefreshControl != nil && self.lpcRefreshControl!.isRefreshing && !customView.isAnimating {
+            customView.isAnimating = true
+            lpcRefreshControl!.layoutIfNeeded()
+            lpcRefreshControl!.beginRefreshing()
+            delegatePullToRefresh?.onRefresh()
+        }
     }
     
     // MARK: Public Methods
     
     public func endRefreshing() {
-        if lpcRefreshControl.isRefreshing {
-            self.lpcRefreshControl.endRefreshing()
-            self.customView.isAnimating = false
+        
+        if self.lpcRefreshControl != nil && self.customView.isAnimating {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(1)), execute: {
+                self.lpcRefreshControl!.endRefreshing()
+                self.customView.isAnimating = false
+            })
         }
     }
     
-    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        if lpcRefreshControl.isRefreshing {
-            self.customView.isAnimating = true
-            self.delegatePullToRefresh?.onRefresh()
-        }
+    public func scrollViewDidEndDecelerating(_: UIScrollView) {
+        refresh()
+    }
+    
+    public func scrollViewDidEndDragging(_: UIScrollView, willDecelerate _: Bool) {
+        refresh()
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffset = scrollView.contentOffset.y
+        customView.frame = CGRect(x: (frame.size.width - customViewWidth) / 2, y: (-contentOffset - customViewHeight) / 2, width: customViewWidth, height: customViewHeight)
     }
 }
+
+

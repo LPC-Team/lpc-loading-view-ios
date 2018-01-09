@@ -16,7 +16,7 @@ public class LoadingView: UIView {
     
     // MARK: Properties
     
-    public var isAnimating: Bool = true {
+    public var isAnimating: Bool = false {
         didSet {
             if isAnimating {
                 doAnimateCycle(withRects: [rect1, rect2, rect3])
