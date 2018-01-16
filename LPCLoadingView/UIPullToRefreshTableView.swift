@@ -20,7 +20,7 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     
     var lpcRefreshControl: UIRefreshControl?
     
-    var customView: LoadingView!
+    var customView: LoadingView?
     
     private let customViewHeight = CGFloat(20)
     
@@ -60,14 +60,13 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
         }
         let frame = CGRect(x: (self.frame.size.width - customViewWidth) / 2, y: -customViewHeight / 2, width: customViewWidth, height: customViewHeight)
         customView = LoadingView(frame: frame)
-        lpcRefreshControl!.addSubview(customView)
+        lpcRefreshControl!.addSubview(customView!)
     }
     
     private func refresh() {
-        if self.lpcRefreshControl != nil && self.lpcRefreshControl!.isRefreshing && !customView.isAnimating {
+        if let lpcRefreshControl = self.lpcRefreshControl , let customView = self.customView ,  lpcRefreshControl.isRefreshing , !customView.isAnimating {
             customView.isAnimating = true
-            lpcRefreshControl!.layoutIfNeeded()
-            lpcRefreshControl!.beginRefreshing()
+            lpcRefreshControl.beginRefreshing()
             delegatePullToRefresh?.onRefresh()
         }
     }
@@ -75,11 +74,10 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     // MARK: Public Methods
     
     public func endRefreshing() {
-        
-        if self.lpcRefreshControl != nil && self.customView.isAnimating {
+        if let lpcRefreshControl = self.lpcRefreshControl , let customView = self.customView , customView.isAnimating {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(1)), execute: {
-                self.lpcRefreshControl!.endRefreshing()
-                self.customView.isAnimating = false
+                lpcRefreshControl.endRefreshing()
+                customView.isAnimating = false
             })
         }
     }
@@ -94,7 +92,7 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let contentOffset = scrollView.contentOffset.y
-        customView.frame = CGRect(x: (frame.size.width - customViewWidth) / 2, y: (-contentOffset - customViewHeight) / 2, width: customViewWidth, height: customViewHeight)
+        customView?.frame = CGRect(x: (frame.size.width - customViewWidth) / 2, y: (-contentOffset - customViewHeight) / 2, width: customViewWidth, height: customViewHeight)
     }
 }
 
