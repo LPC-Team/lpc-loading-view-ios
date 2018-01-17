@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SVRadialGradientLayer: CALayer {
+final class SVRadialGradientLayer: CALayer {
     
     // MARK: Properties
     

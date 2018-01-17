@@ -8,20 +8,20 @@
 
 import UIKit
 
-public class LoadingView: UIView {
+public final class LoadingView: UIView {
     
     // MARK: Static Properties
     
-    static let kShowHideAnimateDuration = 0.2
+    private static let kShowHideAnimateDuration = 0.2
     
     // MARK: Properties
     
     public var isAnimating: Bool = false {
         didSet {
-            if isAnimating {
-                doAnimateCycle(withRects: [rect1, rect2, rect3])
+            if self.isAnimating {
+                self.doAnimateCycle(withRects: [self.rect1, self.rect2, self.rect3])
             } else {
-                endAnimation = true
+                self.endAnimation = true
             }
         }
     }
@@ -39,7 +39,7 @@ public class LoadingView: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
-        configUI()
+        self.configUI()
         isUserInteractionEnabled = false
     }
     
@@ -47,21 +47,21 @@ public class LoadingView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Internal Methods
+    // MARK: Private Methods
     
-    func configUI() {
+    private func configUI() {
         backgroundColor = UIColor.clear
-        rect1 = drawRect(atPosition: CGPoint(x: 0, y: 0))
-        rect2 = drawRect(atPosition: CGPoint(x: 20, y: 0))
-        rect3 = drawRect(atPosition: CGPoint(x: 40, y: 0))
-        addSubview(rect1)
-        addSubview(rect2)
-        addSubview(rect3)
-        setHudColor()
+        self.rect1 = drawRect(atPosition: CGPoint(x: 0, y: 0))
+        self.rect2 = drawRect(atPosition: CGPoint(x: 20, y: 0))
+        self.rect3 = drawRect(atPosition: CGPoint(x: 40, y: 0))
+        addSubview(self.rect1)
+        addSubview(self.rect2)
+        addSubview(self.rect3)
+        self.setHudColor()
     }
     
-    func doAnimateCycle(withRects rects: [UIView]) {
-        if !endAnimation {
+    private func doAnimateCycle(withRects rects: [UIView]) {
+        if !self.endAnimation {
             weak var wSelf: LoadingView? = self
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(0.25 * 0.5 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {() -> Void in
                 wSelf?.animateRect(rects[0], withDuration: 0.25)
@@ -76,11 +76,11 @@ public class LoadingView: UIView {
                 wSelf?.doAnimateCycle(withRects: rects)
             })
         } else {
-            endAnimation = false
+            self.endAnimation = false
         }
     }
     
-    func animateRect(_ rect: UIView, withDuration duration: TimeInterval) {
+    private func animateRect(_ rect: UIView, withDuration duration: TimeInterval) {
         rect.autoresizingMask = .flexibleHeight
         UIView.animate(withDuration: duration, animations: {() -> Void in
             rect.alpha = 1
@@ -94,33 +94,35 @@ public class LoadingView: UIView {
         })
     }
     
-    func drawRect(atPosition positionPoint: CGPoint) -> UIView {
+    private func drawRect(atPosition positionPoint: CGPoint) -> UIView {
         let rect = UIView()
         let rectFrame = CGRect(x:positionPoint.x , y: 0, width: 15, height: 15)
         rect.frame = rectFrame
         rect.backgroundColor = UIColor.red
         rect.alpha = 0.5
         rect.layer.cornerRadius = rectFrame.size.width / 2
-        hudRects.append(rect)
+        self.hudRects.append(rect)
         return rect
     }
     
-    func setHudColor() {
+    private func setHudColor() {
         let hudColors = [UIColor.primary(), UIColor.tertiary(), UIColor.secondary()]
-        for i in 0..<hudRects.count {
-            let rect = hudRects[i] as? UIView
+        for i in 0..<self.hudRects.count {
+            let rect = self.hudRects[i] as? UIView
             rect?.backgroundColor = hudColors[i]
         }
     }
     
-    func hide() {
+    // MARK: Internal Methods
+    
+    final func hide() {
         UIView.animate(withDuration: LoadingView.kShowHideAnimateDuration, animations: {() -> Void in
             self.alpha = 0
         }, completion: {(_ finished: Bool) -> Void in
         })
     }
     
-    func show(animated: Bool) {
+    final func show(animated: Bool) {
         if animated {
             UIView.animate(withDuration: LoadingView.kShowHideAnimateDuration, animations: {() -> Void in
                 self.alpha = 1

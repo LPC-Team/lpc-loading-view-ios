@@ -9,23 +9,20 @@
 import UIKit
 import Foundation
 
-public class LoadingHUD: UIView {
-    
-    // MARK: Static Properties
-    
-    static var sharedView: LoadingHUD?
+public final class LoadingHUD: UIView {
     
     // MARK: Properties
     
-    var loadingView: LoadingView!
+    private static var sharedView: LoadingHUD?
+    private(set) var loadingView: LoadingView!
     
     // MARK: Static Methods
     
     static func getSharedView() -> LoadingHUD {
-        if (sharedView == nil) {
+        if (LoadingHUD.sharedView == nil) {
             if let bounds = UIApplication.shared.delegate?.window??.bounds {
-                sharedView = LoadingHUD(frame: bounds)
-                if let sharedView = sharedView {
+                LoadingHUD.sharedView = LoadingHUD(frame: bounds)
+                if let sharedView = LoadingHUD.sharedView {
                     let frame = CGRect(x: (sharedView.frame.size.width - 55) / 2, y: (sharedView.frame.size.height - 20) / 2, width: 55, height: 20)
                     sharedView.loadingView = LoadingView(frame: frame)
                     sharedView.addSubview(sharedView.loadingView)
@@ -41,25 +38,12 @@ public class LoadingHUD: UIView {
                 }
             }
         }
-        return sharedView!
+        return LoadingHUD.sharedView!
     }
     
-    // MARK: Public Methods
+    // MARK: Private Methods
     
-    public class func show() {
-        self.addToView()
-        self.getSharedView().loadingView?.show(animated: true)
-        self.getSharedView().isHidden = false
-    }
-    
-    public class func dismiss() {
-        self.getSharedView().isHidden = true
-        self.getSharedView().loadingView?.hide()
-    }
-    
-    // MARK: Internal Methods
-    
-    class func addToView() {
+    private static func addToView() {
         if self.getSharedView().superview == nil {
             let frontToBackWindows = UIApplication.shared.windows.reversed()
             for window: UIWindow in frontToBackWindows {
@@ -73,5 +57,18 @@ public class LoadingHUD: UIView {
             }
         }
         self.getSharedView().superview?.bringSubview(toFront: self.getSharedView())
+    }
+    
+    // MARK: Public Methods
+    
+    public static func show() {
+        self.addToView()
+        self.getSharedView().loadingView?.show(animated: true)
+        self.getSharedView().isHidden = false
+    }
+    
+    public static func dismiss() {
+        self.getSharedView().isHidden = true
+        self.getSharedView().loadingView?.hide()
     }
 }

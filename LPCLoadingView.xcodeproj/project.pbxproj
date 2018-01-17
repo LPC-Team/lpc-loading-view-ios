@@ -58,8 +58,8 @@
 				FF09B15C1FA0E846001C9E72 /* SVRadialGradientLayer.swift */,
 				FF09B15E1FA0E86B001C9E72 /* LoadingView.swift */,
 				FF09B1601FA0E8E6001C9E72 /* LoadingHUD.swift */,
-				FF09B1551FA0E82A001C9E72 /* Info.plist */,
 				FF8B5EFC1FA76A120027E7DE /* UIPullToRefreshTableView.swift */,
+				FF09B1551FA0E82A001C9E72 /* Info.plist */,
 			);
 			path = LPCLoadingView;
 			sourceTree = "<group>";
