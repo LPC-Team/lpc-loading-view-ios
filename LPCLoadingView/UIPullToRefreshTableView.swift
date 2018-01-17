@@ -26,7 +26,9 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     
     private let customViewWidth = CGFloat(55)
     
-    private var layoutWasSubviewed: Bool = false
+    private var layoutWasSubviewed = false
+    
+    private var isRefreshing = false
     
     // MARK: Overrides
     
@@ -64,7 +66,8 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     }
     
     private func refresh() {
-        if let lpcRefreshControl = self.lpcRefreshControl , let customView = self.customView ,  lpcRefreshControl.isRefreshing , !customView.isAnimating {
+        if let lpcRefreshControl = self.lpcRefreshControl, let customView = self.customView,  lpcRefreshControl.isRefreshing, !customView.isAnimating, !isRefreshing {
+            isRefreshing = true
             customView.isAnimating = true
             lpcRefreshControl.beginRefreshing()
             delegatePullToRefresh?.onRefresh()
@@ -74,7 +77,8 @@ public class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     // MARK: Public Methods
     
     public func endRefreshing() {
-        if let lpcRefreshControl = self.lpcRefreshControl , let customView = self.customView , customView.isAnimating {
+        if let lpcRefreshControl = self.lpcRefreshControl, let customView = self.customView, customView.isAnimating, isRefreshing {
+            isRefreshing = false
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(1)), execute: {
                 lpcRefreshControl.endRefreshing()
                 customView.isAnimating = false
