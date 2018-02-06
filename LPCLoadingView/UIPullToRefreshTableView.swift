@@ -8,8 +8,9 @@
 
 import UIKit
 
-public protocol UIPullToRefreshDelegate: class {
-    func onRefresh()
+@objc public protocol UIPullToRefreshDelegate: class {
+    func onRefreshStarted()
+    @objc optional func onRefreshFinished()
 }
 
 public final class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
@@ -64,7 +65,7 @@ public final class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
             self.isRefreshing = true
             customView.isAnimating = true
             lpcRefreshControl.beginRefreshing()
-            self.delegatePullToRefresh?.onRefresh()
+            self.delegatePullToRefresh?.onRefreshStarted()
         }
     }
     
@@ -76,6 +77,7 @@ public final class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(1)), execute: {
                 lpcRefreshControl.endRefreshing()
                 customView.isAnimating = false
+                self.delegatePullToRefresh?.onRefreshFinished?()
             })
         }
     }
@@ -93,5 +95,3 @@ public final class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
         self.customView?.frame = CGRect(x: (frame.size.width - customViewWidth) / 2, y: (-contentOffset - customViewHeight) / 2, width: customViewWidth, height: customViewHeight)
     }
 }
-
-
