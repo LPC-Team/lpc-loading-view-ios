@@ -15,15 +15,18 @@ import UIKit
 
 public final class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     
-    // MARK: Properties
+    // MARK: Public Properties
     
     public weak var delegatePullToRefresh: UIPullToRefreshDelegate?
+    public var isRefreshing = false
+    
+    // MARK: Private Properties
+    
     private var lpcRefreshControl: UIRefreshControl?
     private var customView: LoadingView?
     private let customViewHeight = CGFloat(20)
     private let customViewWidth = CGFloat(55)
     private var layoutWasSubviewed = false
-    private var isRefreshing = false
     
     // MARK: Overrides
     
@@ -55,9 +58,9 @@ public final class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
         } else {
             addSubview(self.lpcRefreshControl!)
         }
-        let frame = CGRect(x: (self.frame.size.width - customViewWidth) / 2, y: -customViewHeight / 2, width: customViewWidth, height: customViewHeight)
+        let frame = CGRect(x: (self.frame.size.width - self.customViewWidth) / 2, y: -self.customViewHeight / 2, width: self.customViewWidth, height: self.customViewHeight)
         self.customView = LoadingView(frame: frame)
-        self.lpcRefreshControl!.addSubview(customView!)
+        self.lpcRefreshControl!.addSubview(self.customView!)
     }
     
     private func refresh() {
@@ -73,10 +76,10 @@ public final class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     
     public final func endRefreshing() {
         if let lpcRefreshControl = self.lpcRefreshControl, let customView = self.customView, customView.isAnimating, self.isRefreshing {
-            self.isRefreshing = false
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(__int64_t(1)), execute: {
                 lpcRefreshControl.endRefreshing()
                 customView.isAnimating = false
+                self.isRefreshing = false
                 self.delegatePullToRefresh?.onRefreshFinished?()
             })
         }
@@ -92,6 +95,6 @@ public final class UIPullToRefreshTableView: UITableView, UITableViewDelegate {
     
     public final func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let contentOffset = scrollView.contentOffset.y
-        self.customView?.frame = CGRect(x: (frame.size.width - customViewWidth) / 2, y: (-contentOffset - customViewHeight) / 2, width: customViewWidth, height: customViewHeight)
+        self.customView?.frame = CGRect(x: (frame.size.width - self.customViewWidth) / 2, y: (-contentOffset - self.customViewHeight) / 2, width: self.customViewWidth, height: self.customViewHeight)
     }
 }
